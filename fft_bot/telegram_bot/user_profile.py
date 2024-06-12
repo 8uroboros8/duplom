@@ -8,11 +8,11 @@ def user_info(message: types.Message):
     user_photos = bot.get_user_profile_photos(message.from_user.id)
     gamer = Gamers.objects.get(telegram_id=message.from_user.id)
     profile_info = text.Profile_info.format(
-        nickname=message.from_user.username,
+        nickname=message.from_user.first_name,
         email=gamer.email,
         user_games=', '.join([game.name for game in gamer.games_set.all()]),
-        finded_gamers='TODO',
-        user_about='TODO',
+        linc=message.from_user.username,
+        # user_about=message.from_user,
     )
     if user_photos.total_count > 0:
         photo_file_id = user_photos.photos[0][0].file_id

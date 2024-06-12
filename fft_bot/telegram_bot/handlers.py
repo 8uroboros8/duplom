@@ -8,12 +8,30 @@ from user_profile import user_info, find_info
 # from reviews import reviews_message
 from telebot import types
 from typing import Dict
+from gamers.models import Gamers
+from gamers.tasks import broadcust_of_message
 # logging.basicConfig(level=logging.DEBUG,
 #                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 # logger = logging.getLogger(__name__)
+user_data = {}
 
 
+@bot.message_handler(func=lambda message: message.text in ["Надіслати", "Відмінити"])
+def handle_game_selection(message):
+    id_arr = []
+    if message.text == "Надіслати":
+        all_gamers = Gamers.objects.all()
+        text = user_data[message.from_user.id]['text']
+        for gamer in all_gamers:
+            id_arr.append(gamer.telegram_id)
+        print(id_arr)
+        broadcust_of_message.delay(id_arr, text)
+        return start_page(message)
+    elif message.text == "Відмінити":
+        return start_page(message)
+            
+            
 def get_keyboard(user_id):
     user_position = Keyboard(bot)
     return user_position
@@ -69,24 +87,31 @@ def find_user_handler_prev(call: types.CallbackQuery):
 
 
 def change_data_handler(message):
-    change_data_keyboard(message)
+    broadcust_keyboard(message)
 
-def change_data_keyboard(message):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    btn1 = types.KeyboardButton("Про мене")
-    btn2 = types.KeyboardButton("Назва профілю")
-    markup.add(btn1, btn2)
-    bot.send_message(message.from_user.id, "Звичайно", reply_markup=markup)
-    change_data2(message)
+def broadcust_keyboard(message):
+    bot.send_message(message.from_user.id, "Введіть ваше повідомлення")
+    bot.register_next_step_handler(message, change_data2)
 
 def change_data2(message: types.Message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    btn1 = types.KeyboardButton("Надіслати")
+    btn2 = types.KeyboardButton("Відмінити")
+    markup.add(btn1, btn2)
     text = message.text
+    if not message.from_user.id in user_data:
+        user_data[message.from_user.id] = {}
+    user_data[message.from_user.id]['text']=text
+    bot.send_message(message.from_user.id, text=f'Збираєтесь надіслати: {text}', reply_markup=markup)
     print(text)
-    if "📋 Змінити мої дані" in text:
-        bot.send_message(message.from_user.id, text="Виберіть дані які хочете змінити:")
-        reg1(message)
-    elif text == "Назва профілю":
-        bot.send_message(message.from_user.id, text="Ведіть оновлені дані")
+    
+    if "Надіслати" in message.text:
+        for gamer in all_gamers:
+            tele_id = gamer.telegram_id
+            broadcust_of_message.delay(message, tele_id, text)
+        return start_page(message)
+    elif "Відмінити" in message.text:
+        return start_page(message)
 
 def reg1(message):
     print(message.text)

@@ -22,8 +22,8 @@ Profile_info = (
     'Ваш нікнейм: {nickname}\n'
     'Прив\'язана пошта: {email}\n'
     'Ваш вибір ігор: {user_games}\n'
-    'Знайдені гравці: {finded_gamers}\n\n'
-    'Про мене: {user_about}'
+    'Посилання користувача: @{linc}\n\n'
+    # 'Про мене: {user_about}'
 )
 
 Profile_check_info = (

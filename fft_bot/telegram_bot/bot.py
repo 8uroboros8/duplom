@@ -26,7 +26,6 @@ from gamers import tasks
 
 @bot.message_handler(commands=['start'])
 def start_handler(message: types.Message):
-    tasks.test_task.delay()
     try:
         gamer = Gamers.objects.get(telegram_id=message.from_user.id)
         start_page(message)
@@ -55,7 +54,7 @@ def find_user_filter(message: types.Message):
     bot.send_message(message.from_user.id, 'Оберіть групу для пошуку:', reply_markup=inline_markup)
 
 
-@bot.message_handler(func=lambda message: re.search(r'Змінити мої дані', message.text, re.IGNORECASE))
+@bot.message_handler(func=lambda message: re.search(r'Зробити розсилку', message.text, re.IGNORECASE))
 def change_data_filter(message):
     change_data_handler(message)
 

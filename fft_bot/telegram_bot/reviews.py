@@ -10,10 +10,12 @@ def reviews_message(message: types.Message):
     markup.add("Відправити")
     markup.add("Скасувати")
     bot.send_message(message.from_user.id, text=f'Ваше повідомлення:\n\n{review}\n\nВідправити?', reply_markup=markup)
+    print(f"Review captured: {review}")
     bot.register_next_step_handler(message, validate_reviews_message, review)
 
 
 def validate_reviews_message(message: types.Message, review):
+    print(f"Next step handler triggered with message: {message.text}")
     bot.send_message(message.from_user.id, text=message.text)
     if 'Відправити' in message.text:
         validate_sucsess(message, review)
