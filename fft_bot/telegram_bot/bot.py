@@ -22,7 +22,7 @@ import re
 from config import bot
 from gamers.models import Gamers, Games, TeleData
 from gamers import tasks
-# from registration import registrate_email
+from registration import registrate_email
 
 @bot.message_handler(commands=['start'])
 def start_handler(message: types.Message):

@@ -46,9 +46,17 @@ def start_page(message):
 def my_profile_handler(message):
     user_info(message)
 
-def my_friends_handler(message):
-    bot.send_message(message.chat.id, "На жаль, зараз ваш список порожній, але це можна виправити, просто натисніть \"Розпочати пошук\"")
-
+def my_friends_handler(message: types.Message):
+    text = 'Мої друзі:\n'
+    gamer = Gamers.objects.get(telegram_id=message.from_user.id)
+    my_friends = gamer.friends_with.all()
+    if gamer.friends_with.count()==0:
+        bot.send_message(message.chat.id, "На жаль, зараз ваш список порожній, але це можна виправити, просто натисніть \"Розпочати пошук\"")
+        return
+    for friend in my_friends:
+        text += f'@{friend.name}\n'
+    bot.send_message(message.from_user.id, text=text)
+    
 def send_inline_keyboard(message):
     markup = types.InlineKeyboardMarkup()
     btn1 = types.InlineKeyboardButton("Дота2", callback_data='game_Dota2')
@@ -84,7 +92,15 @@ def find_user_handler_next(call: types.CallbackQuery):
 def find_user_handler_prev(call: types.CallbackQuery):
     user_state[call.from_user.id]['find_in_group_page_index'] -= 1
     find_info(call, user_state)
-
+    
+@bot.callback_query_handler(func=lambda call: call.data.startswith('add_friend_#'))
+def add_friend(call: types.CallbackQuery):
+    id_of_friend = call.data.split('#')[1]
+    my_acc = Gamers.objects.get(telegram_id=call.from_user.id)
+    friend_acc = Gamers.objects.get(id=id_of_friend)
+    my_acc.friends_with.add(friend_acc)
+    bot.send_message(call.from_user.id, text=f'Користувача {friend_acc.name} було успішно добавлено')
+    bot.answer_callback_query(call.id)
 
 def change_data_handler(message):
     broadcust_keyboard(message)
