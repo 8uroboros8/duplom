@@ -46,7 +46,7 @@ class TeleData(models.Model):
         verbose_name_plural = verbose_name
 
     telegram_id = models.IntegerField(blank=False)
-    telegram_photo = models.IntegerField(blank=True)
+    telegram_photo = models.CharField(blank=True, null=True, max_length=255)
     telegram_name = models.CharField(max_length=50)
     telegram_link = models.CharField(max_length=50)
 

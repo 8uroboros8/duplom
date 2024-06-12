@@ -21,14 +21,17 @@ from reviews import reviews_message
 import text
 import re
 from config import bot
-from gamers.models import Gamers
-
+from gamers.models import Gamers, TeleData
+from registration import registrate_email
 
 @bot.message_handler(commands=['start'])
 def start_handler(message: types.Message):
-    gamer = Gamers.objects.get(id=1)
-    print(gamer.telegram_id)
-    start_page(message)
+    try:
+        gamer = Gamers.objects.get(telegram_id=message.from_user.id)
+        start_page(message)
+    except Gamers.DoesNotExist as error:
+        bot.send_message(message.from_user.id, text='Введіть будь ласка вашу поштову адресу')
+        bot.register_next_step_handler(message, registrate_email)
 
 @bot.message_handler(func=lambda message: re.search(r'Відгуки|Скарги|Пропозиції', message.text, re.IGNORECASE))
 def reviews_filter(message):
