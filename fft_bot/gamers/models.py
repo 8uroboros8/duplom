@@ -36,6 +36,9 @@ class Games(models.Model):
     name = models.CharField(max_length=50)
     gamers = models.ManyToManyField(to=Gamers, blank=True)
 
+    def __str__(self):
+        return self.name
+
 
 class TeleData(models.Model):
     class Meta:
@@ -46,3 +49,6 @@ class TeleData(models.Model):
     telegram_photo = models.IntegerField(blank=True)
     telegram_name = models.CharField(max_length=50)
     telegram_link = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f'{self.telegram_link} ({self.telegram_id})'
