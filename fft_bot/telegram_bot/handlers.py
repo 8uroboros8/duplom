@@ -1,13 +1,13 @@
 
 import logging
+from gamers.models import Gamers
 from keyboards import Keyboard
 from config import bot
 import text as text
 from user_profile import user_info, find_info
 # from reviews import reviews_message
-import telebot
 from telebot import types
-
+from typing import Dict
 # logging.basicConfig(level=logging.DEBUG,
 #                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
@@ -40,8 +40,33 @@ def send_inline_keyboard(message):
     markup.add(btn1, btn2, btn3, btn4)
     bot.send_message(message.from_user.id, "Виберіть гру для пошуку:", reply_markup=markup)
 
-def find_user_handler(message):
-    find_info(message)
+
+user_state: Dict[str, dict] = {}
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('find_in_group_#'))
+def find_user_handler(call: types.CallbackQuery):
+    game_id = call.data.split('#')[1]
+
+    if not call.from_user.id in user_state:
+        user_state[call.from_user.id] = {}
+
+    user_state[call.from_user.id]['find_in_group'] = game_id
+    user_state[call.from_user.id]['find_in_group_page_index'] = 0
+    find_info(call, user_state)
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('find_in_group_next'))
+def find_user_handler_next(call: types.CallbackQuery):
+    user_state[call.from_user.id]['find_in_group_page_index'] += 1
+    find_info(call, user_state)
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('find_in_group_prev'))
+def find_user_handler_prev(call: types.CallbackQuery):
+    user_state[call.from_user.id]['find_in_group_page_index'] -= 1
+    find_info(call, user_state)
+
 
 def change_data_handler(message):
     change_data_keyboard(message)

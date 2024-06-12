@@ -20,9 +20,9 @@ from reviews import reviews_message
 import text
 import re
 from config import bot
-from gamers.models import Gamers, TeleData
+from gamers.models import Gamers, Games, TeleData
 from gamers import tasks
-from registration import registrate_email
+# from registration import registrate_email
 
 @bot.message_handler(commands=['start'])
 def start_handler(message: types.Message):
@@ -44,8 +44,16 @@ def my_profile_filter(message):
     my_profile_handler(message)
 
 @bot.message_handler(func=lambda message: re.search(r'Розпочати пошук', message.text, re.IGNORECASE))
-def find_user_filter(message):
-    find_user_handler(message)
+def find_user_filter(message: types.Message):
+    games = Games.objects.all()
+    inline_markup = types.InlineKeyboardMarkup(row_width=1)
+
+    for game in games:
+        btn = types.InlineKeyboardButton(game.name, callback_data=f"find_in_group_#{game.id}")
+        inline_markup.add(btn)
+
+    bot.send_message(message.from_user.id, 'Оберіть групу для пошуку:', reply_markup=inline_markup)
+
 
 @bot.message_handler(func=lambda message: re.search(r'Змінити мої дані', message.text, re.IGNORECASE))
 def change_data_filter(message):
