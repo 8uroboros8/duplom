@@ -19,16 +19,16 @@ Review_text = (
 )
 
 Profile_info = (
-    'Ваш нікнейм: UrohaKaboros\n'
-    'Прив\'язана пошта: urohakaboros@gmail.com\n'
-    'Ваш вибір ігор: Dota2, CS2, ESO, APEX\n'
-    'Знайдені гравці: 0\n\n'
-    'Про мене: Розробник цього бота, шукаю хороших гравців для приємного проведення часу'
+    'Ваш нікнейм: {nickname}\n'
+    'Прив\'язана пошта: {email}\n'
+    'Ваш вибір ігор: {user_games}\n'
+    'Знайдені гравці: {finded_gamers}\n\n'
+    'Про мене: {user_about}'
 )
 
 Profile_check_info = (
-    'UrohaKaboros\n'
-    'Граю в: Dota2, CS2, ESO, APEX\n'
-    'Тег для зв\'язку: @DeNNeD8\n\n'
-    'Про мене: Розробник цього бота, шукаю хороших гравців для приємного проведення часу'
+    '{nickname}\n'
+    'Граю в: {user_games}\n'
+    'Тег для зв\'язку: @{nickname}\n\n'
+    'Про мене: {user_about}'
 )
