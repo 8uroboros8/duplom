@@ -18,13 +18,11 @@ from handlers import (
     my_friends_handler,
 )
 from reviews import reviews_message
-import text as text
+import text
 import re
+from config import bot
 from gamers.models import Gamers
 
-API_TOKEN = '6451225634:AAHnwDtRvvhiqlEQI-HXOEsgrUh1tTglQvw'
-
-bot = telebot.TeleBot(API_TOKEN)
 
 @bot.message_handler(commands=['start'])
 def start_handler(message: types.Message):
