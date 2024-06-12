@@ -21,7 +21,6 @@ class Gamers(models.Model):
         'self',
         symmetrical=False,
         related_name='friends_with',
-        null=True,
         blank=True,
     )
 
@@ -35,7 +34,7 @@ class Games(models.Model):
         verbose_name_plural = verbose_name
 
     name = models.CharField(max_length=50)
-    gamers = models.ManyToManyField(to=Gamers)
+    gamers = models.ManyToManyField(to=Gamers, blank=True)
 
 
 class TeleData(models.Model):
