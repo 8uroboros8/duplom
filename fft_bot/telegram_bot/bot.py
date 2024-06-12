@@ -7,7 +7,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "fft_bot.settings")
 django.setup()
 
-import telebot
 from telebot import types
 from handlers import (
     start_page,
@@ -22,10 +21,12 @@ import text
 import re
 from config import bot
 from gamers.models import Gamers, TeleData
+from gamers import tasks
 from registration import registrate_email
 
 @bot.message_handler(commands=['start'])
 def start_handler(message: types.Message):
+    tasks.test_task.delay()
     try:
         gamer = Gamers.objects.get(telegram_id=message.from_user.id)
         start_page(message)
