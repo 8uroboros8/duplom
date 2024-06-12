@@ -10,21 +10,39 @@ from django.db import models
 # >>> gamer.friends_with.all()
 
 class Gamers(models.Model):
+    class Meta:
+        verbose_name = 'Ігроки'
+        verbose_name_plural = verbose_name
+
     name = models.CharField(max_length=50)
     email = models.EmailField(max_length=50)
     telegram_id = models.CharField(max_length=50)
-    friend = models.ManyToManyField('self', symmetrical=False, related_name='friends_with')
+    friend = models.ManyToManyField(
+        'self',
+        symmetrical=False,
+        related_name='friends_with',
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
         return self.name
 
 
 class Games(models.Model):
+    class Meta:
+        verbose_name = 'Ігри'
+        verbose_name_plural = verbose_name
+
     name = models.CharField(max_length=50)
     gamers = models.ManyToManyField(to=Gamers)
 
 
 class TeleData(models.Model):
+    class Meta:
+        verbose_name = 'Дані з телеграм'
+        verbose_name_plural = verbose_name
+
     telegram_id = models.IntegerField(blank=False)
     telegram_photo = models.IntegerField(blank=True)
     telegram_name = models.CharField(max_length=50)
