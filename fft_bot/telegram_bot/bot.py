@@ -1,18 +1,35 @@
+import django
+import os
+import sys
+
+# https://docs.djangoproject.com/en/4.2/topics/settings/#calling-django-setup-is-required-for-standalone-django-usage
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "fft_bot.settings")
+django.setup()
+
 import telebot
 from telebot import types
-from handlers import *
+from handlers import (
+    start_page,
+    my_profile_handler,
+    find_user_handler,
+    change_data_handler,
+    info_handler,
+    my_friends_handler,
+)
 from reviews import reviews_message
 import text as text
 import re
-# from gamers.models import Gamers
+from gamers.models import Gamers
+
 API_TOKEN = '6451225634:AAHnwDtRvvhiqlEQI-HXOEsgrUh1tTglQvw'
 
 bot = telebot.TeleBot(API_TOKEN)
 
 @bot.message_handler(commands=['start'])
 def start_handler(message: types.Message):
-    # gamer = Gamers.objects.all()
-    # print(gamer.telegram_id)
+    gamer = Gamers.objects.get(id=1)
+    print(gamer.telegram_id)
     start_page(message)
 
 @bot.message_handler(func=lambda message: re.search(r'Відгуки|Скарги|Пропозиції', message.text, re.IGNORECASE))
